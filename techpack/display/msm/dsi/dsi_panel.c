@@ -45,6 +45,8 @@ EXPORT_SYMBOL_GPL(dsi_freq_head);
 #define DSI_PANEL_UNKNOWN_PANEL_NAME	"unknown"
 #define DSI_PANEL_PANEL_DEFAULT_VER 	0xffffffffffffffff
 
+extern void zram_set_screen_state(bool on);
+
 static struct panel_param_val_map hbm_map[HBM_STATE_NUM] = {
 	{HBM_OFF_STATE, DSI_CMD_SET_HBM_OFF, NULL},
 	{HBM_ON_STATE, DSI_CMD_SET_HBM_ON, NULL},
@@ -449,6 +451,7 @@ static int dsi_panel_power_on(struct dsi_panel *panel)
 
 	if ((panel->tp_state_check_enable) && (panel->tp_state)) {
 		pr_info("%s: (%s)+power is alway on \n", __func__, panel->name);
+		zram_set_screen_state(true);
 		goto exit;
 	}
 
@@ -465,6 +468,7 @@ static int dsi_panel_power_on(struct dsi_panel *panel)
 		goto error_disable_vregs;
 	}
 
+	zram_set_screen_state(true);
 	goto exit;
 
 error_disable_vregs:
@@ -482,6 +486,7 @@ static int dsi_panel_power_off(struct dsi_panel *panel)
 
 	if (panel->tp_state_check_enable) {
 			if (panel_power_is_alway_on (panel)) {
+			zram_set_screen_state(false);
 			pr_info("%s: (%s)+power is alway on \n", __func__, panel->name);
 			goto exit;
 		}
@@ -514,7 +519,7 @@ static int dsi_panel_power_off(struct dsi_panel *panel)
 	if (rc)
 		DSI_ERR("[%s] failed to enable vregs, rc=%d\n",
 				panel->name, rc);
-
+	zram_set_screen_state(false);
 exit:
 	return rc;
 }
