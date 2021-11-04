@@ -30,7 +30,7 @@ endif
 ifeq ($(CONFIG_ARCH_SA6155), y)
 include $(srctree)/techpack/audio/config/sa6155auto.conf
 endif
-ifeq ($(CONFIG_NIO_DTB), y)
+ifeq ($(CONFIG_OSAKA_DTB), y)
 include $(srctree)/techpack/audio/config/holiosaka.conf
 export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/holiosaka.conf)
 endif
